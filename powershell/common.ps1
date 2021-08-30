@@ -40,8 +40,8 @@ Write-Host "PowerShell Common initializing..." -ForegroundColor Yellow
 Start-Sleep -Seconds 1
 
 $powershell_common_file_name = "common.ps1";
-$powershell_common_file_path = ".\" + $powershell_common_file_name;
-$powershell_common_file_uri_path = "https://raw.githubusercontent.com/shgic/script/main/powershell/common.ps1";
+$powershell_common_file_path = (Split-Path -Parent $MyInvocation.MyCommand.Definition) + "\" + $powershell_common_file_name;
+$powershell_common_file_uri = "https://raw.githubusercontent.com/shgic/script/main/powershell/common.ps1";
 $web_client_object = New-Object System.Net.WebClient;
 $web_client_object.Proxy = [System.Net.GlobalProxySelection]::GetEmptyWebProxy() 
 
@@ -58,11 +58,11 @@ $waiting_next_download_seconds = 10
 while ($true) {
     try {
         Write-Host -NoNewline (Get-Date -format "[yyyy/MM/dd HH:mm:ss]")
-        Write-Host "Downloading ""$powershell_common_file_uri_path""..." -ForegroundColor Yellow
-        $web_client_object.DownloadFile($powershell_common_file_uri_path, $powershell_common_file_path);
+        Write-Host "Downloading ""$powershell_common_file_uri"" => $powershell_common_file_path..." -ForegroundColor Yellow
+        $web_client_object.DownloadFile($powershell_common_file_uri, $powershell_common_file_path);
         if (Test-Path -Path $powershell_common_file_path) {
             Write-Host -NoNewline (Get-Date -format "[yyyy/MM/dd HH:mm:ss]")
-            Write-Host "Downloaded ""$powershell_common_file_uri_path""" -ForegroundColor Yellow
+            Write-Host "Downloaded ""$powershell_common_file_uri""" -ForegroundColor Yellow
 
             Write-Host -NoNewline (Get-Date -format "[yyyy/MM/dd HH:mm:ss]")
             Write-Host "Loading ""$powershell_common_file_name""..." -ForegroundColor Yellow
@@ -78,7 +78,7 @@ while ($true) {
         Write-Host $Error[0].ScriptStackTrace -ForegroundColor Red
     }
     Write-Host -NoNewline (Get-Date -format "[yyyy/MM/dd HH:mm:ss]")
-    Write-Host "Download ""$powershell_common_file_name"" from ""$powershell_common_file_uri_path"" failed." -ForegroundColor Red
+    Write-Host "Download ""$powershell_common_file_name"" from ""$powershell_common_file_uri"" failed." -ForegroundColor Red
 
     Write-Host -NoNewline (Get-Date -format "[yyyy/MM/dd HH:mm:ss]")
     Write-Host "Waiting for $waiting_next_download_seconds seconds..." -ForegroundColor Yellow
